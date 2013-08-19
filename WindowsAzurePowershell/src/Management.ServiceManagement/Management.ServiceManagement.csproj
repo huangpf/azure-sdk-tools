@@ -156,56 +156,69 @@
     <Compile Include="Common\ValidateDeploymentUpgradeTypeAttribute.cs" />
     <Compile Include="Common\ValidateVMSizeAttribute.cs" />
     <Compile Include="Common\ValidationHelpers.cs" />
-    <Compile Include="Extensions\BaseAzureServiceDiagnosticsExtension.cs">
+    <Compile Include="Extensions\Common\ExtensionContext.cs" />
+    <Compile Include="Extensions\Diagnostics\BaseAzureServiceDiagnosticsExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\BaseAzureServiceExtensionCmdlet.cs">
+    <Compile Include="Extensions\DomainJoin\BaseAzureServiceDomainJoinExtension.cs" />
+    <Compile Include="Extensions\Common\BaseAzureServiceExtensionCmdlet.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\BaseAzureServiceRemoteDesktopExtension.cs">
+    <Compile Include="Extensions\DomainJoin\PrivateSchema.cs">
+      <DependentUpon>PrivateSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\DomainJoin\PublicSchema.cs">
+      <DependentUpon>PublicSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\RemoteDesktop\BaseAzureServiceRemoteDesktopExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\DiagnosticsExtensionContext.cs">
+    <Compile Include="Extensions\Diagnostics\DiagnosticsExtensionContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\ExtensionConfigurationBuilder.cs">
+    <Compile Include="Extensions\DomainJoin\DomainJoinExtensionContext.cs" />
+    <Compile Include="Extensions\Common\ExtensionConfigurationBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\ExtensionConfigurationInput.cs">
+    <Compile Include="Extensions\Common\ExtensionConfigurationInput.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\ExtensionManager.cs">
+    <Compile Include="Extensions\Common\ExtensionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\ExtensionRole.cs">
+    <Compile Include="Extensions\Common\ExtensionRole.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\ExtensionRoleList.cs" />
-    <Compile Include="Extensions\GetAzureServiceDiagnosticsExtension.cs">
+    <Compile Include="Extensions\Common\ExtensionRoleList.cs" />
+    <Compile Include="Extensions\Diagnostics\GetAzureServiceDiagnosticsExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\GetAzureServiceRemoteDesktopExtension.cs">
+    <Compile Include="Extensions\DomainJoin\GetAzureServiceDomainJoinExtension.cs" />
+    <Compile Include="Extensions\RemoteDesktop\GetAzureServiceRemoteDesktopExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\NewAzureServiceDiagnosticsExtensionConfig.cs">
+    <Compile Include="Extensions\Diagnostics\NewAzureServiceDiagnosticsExtensionConfig.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\NewAzureServiceRemoteDesktopExtensionConfig.cs">
+    <Compile Include="Extensions\DomainJoin\NewAzureServiceDomainJoinExtensionConfig.cs" />
+    <Compile Include="Extensions\RemoteDesktop\NewAzureServiceRemoteDesktopExtensionConfig.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\RemoteDesktopExtensionContext.cs">
+    <Compile Include="Extensions\RemoteDesktop\RemoteDesktopExtensionContext.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\RemoveAzureServiceDiagnosticsExtension.cs">
+    <Compile Include="Extensions\Diagnostics\RemoveAzureServiceDiagnosticsExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\RemoveAzureServiceRemoteDesktopExtension.cs">
+    <Compile Include="Extensions\DomainJoin\RemoveAzureServiceDomainJoinExtension.cs" />
+    <Compile Include="Extensions\RemoteDesktop\RemoveAzureServiceRemoteDesktopExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\SetAzureServiceDiagnosticsExtension.cs">
+    <Compile Include="Extensions\Diagnostics\SetAzureServiceDiagnosticsExtension.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions\SetAzureServiceRemoteDesktopExtension.cs">
+    <Compile Include="Extensions\DomainJoin\SetAzureServiceDomainJoinExtension.cs" />
+    <Compile Include="Extensions\RemoteDesktop\SetAzureServiceRemoteDesktopExtension.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\CertUtils.cs" />
@@ -347,6 +360,12 @@
     <Compile Include="StorageServices\StorageCredentialsFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Extensions\DomainJoin\PrivateSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Extensions\DomainJoin\PublicSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="MSSharedLibKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -392,6 +411,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

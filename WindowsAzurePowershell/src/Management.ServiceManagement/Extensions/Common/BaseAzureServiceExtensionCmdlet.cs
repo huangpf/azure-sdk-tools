@@ -12,13 +12,16 @@
 namespace Microsoft.WindowsAzure.Management.ServiceManagement.Extensions
 {
     using System;
+    using System.IO;
     using System.Linq;
     using System.Management.Automation;
     using System.Net;
+    using System.Security;
     using System.Security.Cryptography.X509Certificates;
     using System.ServiceModel;
     using System.Xml;
     using System.Xml.Linq;
+    using System.Xml.Serialization;
     using Helpers;
     using Properties;
     using Utilities.CloudService;
@@ -31,6 +34,17 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Extensions
         protected const string PrivateConfigStr = "PrivateConfig";
         protected const string ChangeConfigurationModeStr = "Auto";
         protected const string XmlNameSpaceAttributeStr = "xmlns";
+
+        protected const string RemoveByRolesParameterSet = "RemoveByRoles";
+        protected const string RemoveAllRolesParameterSet = "RemoveAllRoles";
+
+        protected const string ServiceNameHelpMessage = "Cloud service name.";
+        protected const string SlotHelpMessage = "Production (default) or Staging";
+        protected const string RoleHelpMessage = "Default All Roles, or specify ones for Named Roles.";
+        protected const string X509CertificateHelpMessage = "X509Certificate used to encrypt the content in private configuration.";
+        protected const string CertificateThumbprintHelpMessage = "Thumbprint of a certificate used for encryption.";
+        protected const string ThumbprintAlgorithmHelpMessage = "Algorithm associated with the Thumbprint.";
+        protected const string UninstallConfigurationHelpMessage = "If specified, uninstall all extension configurations in this type from the cloud service.";
 
         protected ExtensionManager ExtensionManager { get; set; }
         protected string ExtensionNameSpace { get; set; }
@@ -238,6 +252,94 @@ namespace Microsoft.WindowsAzure.Management.ServiceManagement.Extensions
                 this.RetryCall(s => found = !Channel.IsDNSAvailable(CurrentSubscription.SubscriptionId, serviceName).Result);
             });
             return found;
+        }
+
+        protected SecureString GetSecurePassword(string password)
+        {
+            SecureString securePassword = new SecureString();
+            if (!string.IsNullOrEmpty(password))
+            {
+                foreach (char c in password)
+                {
+                    securePassword.AppendChar(c);
+                }
+            }
+            return securePassword;
+        }
+
+        protected string Serialize(object config)
+        {
+            StringWriter sw = new StringWriter();
+            XmlSerializer serializer = new XmlSerializer(config.GetType());
+            serializer.Serialize(sw, config);
+            return sw.ToString();
+        }
+
+        protected object Deserialize(string config, Type type)
+        {
+            StringReader sr = new StringReader(config);
+            XmlSerializer serializer = new XmlSerializer(type);
+            return serializer.Deserialize(sr);
+        }
+
+        protected virtual ExtensionContext GetContext(Operation op, ExtensionRole role, HostedServiceExtension ext)
+        {
+            return new ExtensionContext
+            {
+                OperationId = op.OperationTrackingId,
+                OperationDescription = CommandRuntime.ToString(),
+                OperationStatus = op.Status,
+                Extension = ext.Type,
+                ProviderNameSpace = ext.ProviderNameSpace,
+                Id = ext.Id
+            };
+        }
+
+        protected void RemoveExtension()
+        {
+            ExtensionConfigurationBuilder configBuilder = ExtensionManager.GetBuilder(Deployment != null ? Deployment.ExtensionConfiguration : null);
+            if (UninstallConfiguration && configBuilder.ExistAny(ExtensionNameSpace, ExtensionType))
+            {
+                configBuilder.RemoveAny(ExtensionNameSpace, ExtensionType);
+                WriteVerbose(string.Format(Resources.ServiceExtensionRemovingFromAllRoles, ExtensionType, ServiceName));
+                ChangeDeployment(configBuilder.ToConfiguration());
+            }
+            else if (configBuilder.Exist(Role, ExtensionNameSpace, ExtensionType))
+            {
+                configBuilder.Remove(Role, ExtensionNameSpace, ExtensionType);
+                if (Role == null || !Role.Any())
+                {
+                    WriteVerbose(string.Format(Resources.ServiceExtensionRemovingFromAllRoles, ExtensionType, ServiceName));
+                }
+                else
+                {
+                    bool defaultExists = configBuilder.ExistDefault(ExtensionNameSpace, ExtensionType);
+                    foreach (var r in Role)
+                    {
+                        WriteVerbose(string.Format(Resources.ServiceExtensionRemovingFromSpecificRoles, ExtensionType, r, ServiceName));
+                        if (defaultExists)
+                        {
+                            WriteVerbose(string.Format(Resources.ServiceExtensionRemovingSpecificAndApplyingDefault, ExtensionType, r));
+                        }
+                    }
+                }
+                ChangeDeployment(configBuilder.ToConfiguration());
+            }
+            else
+            {
+                WriteVerbose(string.Format(Resources.ServiceExtensionNoExistingExtensionsEnabledOnRoles, ExtensionNameSpace, ExtensionType));
+            }
+
+            if (UninstallConfiguration)
+            {
+                var allConfig = ExtensionManager.GetBuilder();
+                var deploymentList = (from slot in (new string[] { DeploymentSlotType.Production, DeploymentSlotType.Staging })
+                                      let d = GetDeployment(slot)
+                                      where d != null
+                                      select d).ToList();
+                deploymentList.ForEach(d => allConfig.Add(d.ExtensionConfiguration));
+                ExtensionManager.Uninstall(ExtensionNameSpace, ExtensionType, allConfig.ToConfiguration());
+            }
         }
     }
 }
