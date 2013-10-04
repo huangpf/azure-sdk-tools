@@ -129,7 +129,7 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS
         
         internal override void ExecuteCommand()
         {
-            this.ExecuteCommandOldSM();
+            this.ExecuteCommandNewSM();
         }
 
         internal void ExecuteCommandOldSM()
