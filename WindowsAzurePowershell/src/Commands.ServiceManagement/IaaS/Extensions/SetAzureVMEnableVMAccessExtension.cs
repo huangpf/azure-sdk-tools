@@ -27,7 +27,6 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS.Extensions
     public class SetAzureVMEnableVMAccessExtensionCommand : VirtualMachineConfigurationCmdletBase
     {
         public const string EnableExtensionWithNewOrExistingCredentialParameterSet = "EnableExtensionWithNewOrExistingCredential";
-        public const string EnableExtensionToResetRDPCredentialParameterSet = "EnableExtensionToResetRDPCredential";
         public const string DisableExtensionParameterSet = "DisableExtension";
 
         [Parameter(Mandatory = true, ParameterSetName = DisableExtensionParameterSet, HelpMessage = "Disable VM Access Extension")]
@@ -37,15 +36,15 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS.Extensions
             set;
         }
         
-        [Parameter(Mandatory = true, ParameterSetName = EnableExtensionToResetRDPCredentialParameterSet, HelpMessage = "Option to Reset Default RDP Settings")]
-        public SwitchParameter Reset
+        [Parameter(Mandatory = false, ParameterSetName = EnableExtensionWithNewOrExistingCredentialParameterSet, HelpMessage = "New or Existing User Name")]
+        public string UserName
         {
             get;
             set;
         }
-        
-        [Parameter(Mandatory = true, ParameterSetName = EnableExtensionWithNewOrExistingCredentialParameterSet, HelpMessage = "New or Existing User Credential")]
-        public PSCredential Credential
+
+        [Parameter(Mandatory = false, ParameterSetName = EnableExtensionWithNewOrExistingCredentialParameterSet, HelpMessage = "New or Existing User Password")]
+        public string Password
         {
             get;
             set;
@@ -65,9 +64,7 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS.Extensions
 
             VM.GetInstance().ResourceExtensionReferences.Add(
                 Disabled.IsPresent ? new VMEnableVMAccessExtensionBuilder().GetResourceReference()
-                                   : new VMEnableVMAccessExtensionBuilder(
-                                         this.Reset ? null : this.Credential.UserName,
-                                         this.Reset ? null : this.Credential.Password.ConvertToUnsecureString()).GetResourceReference());
+                                   : new VMEnableVMAccessExtensionBuilder(this.UserName, this.Password).GetResourceReference());
             WriteObject(VM);
         }
 
