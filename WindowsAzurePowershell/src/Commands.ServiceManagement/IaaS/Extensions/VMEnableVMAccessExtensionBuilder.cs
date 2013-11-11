@@ -25,7 +25,7 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS.Extensions
 
     public class VMEnableVMAccessExtensionBuilder
     {
-        public const string ExtensionDefaultReferenceName = "MyPasswordResetExtensiont";
+        public const string ExtensionDefaultReferenceName = "MyPasswordResetExtension";
         public const string ExtensionDefaultPublisher = "Microsoft.Compute";
         public const string ExtensionDefaultName = "VMAccessAgent";
         public const string CurrentExtensionVersion = "0.1";
