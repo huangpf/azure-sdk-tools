@@ -104,13 +104,23 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS.Extensions
 
         internal void ExecuteCommand()
         {
-            VM.GetInstance().ResourceExtensionReferences = new ResourceExtensionReferenceList(
-                new int[1].Select(i => (Disabled.IsPresent ? new VMDiagnosticsExtensionBuilder()
-                                                           : new VMDiagnosticsExtensionBuilder(
-                                                               this.StorageAccountName,
-                                                               this.StorageAccountKey,
-                                                               this.Endpoints,
-                                                               DiagnosticsConfiguration)).GetResourceReference()));
+            if (VM.GetInstance().ResourceExtensionReferences == null)
+            {
+                VM.GetInstance().ResourceExtensionReferences = new ResourceExtensionReferenceList();
+            }
+            else
+            {
+                VM.GetInstance().ResourceExtensionReferences.RemoveAll(e => e.Publisher == VMDiagnosticsExtensionBuilder.ExtensionDefaultPublisher &&
+                                                                            e.Name == VMDiagnosticsExtensionBuilder.ExtensionDefaultName);
+            }
+
+            VM.GetInstance().ResourceExtensionReferences.Add(
+                Disabled.IsPresent ? new VMDiagnosticsExtensionBuilder().GetResourceReference()
+                                   : new VMDiagnosticsExtensionBuilder(
+                                       this.StorageAccountName,
+                                       this.StorageAccountKey,
+                                       this.Endpoints,
+                                       DiagnosticsConfiguration).GetResourceReference());
             WriteObject(VM);
         }
 
