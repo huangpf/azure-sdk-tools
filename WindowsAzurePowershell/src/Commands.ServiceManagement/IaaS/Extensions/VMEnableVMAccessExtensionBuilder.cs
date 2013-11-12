@@ -74,16 +74,15 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.IaaS.Extensions
             XDocument publicCfg = null;
             if (enabled)
             {
-                XNamespace configNameSpace = "http://schemas.microsoft.com/ServiceHosting/2010/10/DiagnosticsConfiguration";
                 publicCfg = new XDocument(
                     new XDeclaration("1.0", "utf-8", null),
                     new XElement(ConfigurationElem,
                         new XElement(EnabledElem, enabled.ToString().ToLower()),
                         new XElement(PublicElem,
-                            new XElement(configNameSpace + PublicConfigElem,
-                                new XElement(configNameSpace + AccountElem,
-                                    new XElement(configNameSpace + UserNameElem, userName),
-                                    new XElement(configNameSpace + PasswordElem, password)
+                            new XElement(PublicConfigElem,
+                                new XElement(AccountElem,
+                                    new XElement(UserNameElem, userName),
+                                    new XElement(PasswordElem, password)
                                 )
                             )
                         )
