@@ -3068,7 +3068,11 @@ namespace Microsoft.WindowsAzure.Management.Compute.Models
         
         WorkerRole = 1,
         
-        WebOrWorkerRole = 2,
+        VmRole = 2,
+        
+        WebOrWorkerRole = 3,
+        
+        WebWorkerOrVmRole = 4,
     }
     
     /// <summary>
@@ -9025,9 +9029,17 @@ namespace Microsoft.WindowsAzure.Management.Compute
             {
                 return HostingResources.WorkerRole;
             }
+            if (value == "VmRole")
+            {
+                return HostingResources.VmRole;
+            }
             if (value == "WebRole|WorkerRole")
             {
                 return HostingResources.WebOrWorkerRole;
+            }
+            if (value == "WebRole|WorkerRole|VmRole")
+            {
+                return HostingResources.WebWorkerOrVmRole;
             }
             throw new ArgumentOutOfRangeException("value");
         }
@@ -9051,9 +9063,17 @@ namespace Microsoft.WindowsAzure.Management.Compute
             {
                 return "WorkerRole";
             }
+            if (value == HostingResources.VmRole)
+            {
+                return "VmRole";
+            }
             if (value == HostingResources.WebOrWorkerRole)
             {
                 return "WebRole|WorkerRole";
+            }
+            if (value == HostingResources.WebWorkerOrVmRole)
+            {
+                return "WebRole|WorkerRole|VmRole";
             }
             throw new ArgumentOutOfRangeException("value");
         }
