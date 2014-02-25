@@ -25,6 +25,21 @@ namespace Microsoft.WindowsAzure.Commands.ServiceManagement.Extensions
     [Cmdlet(VerbsDiagnostic.Test, "AzureServiceRemoteDesktopExtension"), OutputType(typeof(RemoteDesktopExtensionContext))]
     public class TestAzureServiceRemoteDesktopExtensionCommand : GetAzureServiceRemoteDesktopExtensionCommand
     {
+        [Parameter(Position = 0, ValueFromPipelineByPropertyName = true, HelpMessage = "Service Name")]
+        public override string ServiceName
+        {
+            get;
+            set;
+        }
+
+        [Parameter(Position = 1, ValueFromPipelineByPropertyName = true, HelpMessage = "Deployment Slot: Production (default) or Staging")]
+        [ValidateSet(DeploymentSlotType.Production, DeploymentSlotType.Staging, IgnoreCase = true)]
+        public override string Slot
+        {
+            get;
+            set;
+        }
+
         protected override void OnProcessRecord()
         {
             base.OnProcessRecord();
