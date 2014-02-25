@@ -12,27 +12,22 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
-namespace Microsoft.WindowsAzure.Commands.ServiceManagement.Extension.IaaS.PersistentVMs
+namespace Microsoft.WindowsAzure.Commands.ServiceManagement.Extensions
 {
+    using System.Linq;
     using System.Management.Automation;
-    using ServiceManagement.IaaS.PersistentVMs;
-    using Utilities.Common;
+    using Management.Compute;
+    using Model.PersistentVMModel;
 
-    [Cmdlet(VerbsCommon.New, "AzureVM", DefaultParameterSetName = "ExistingService"), OutputType(typeof(ManagementOperationContext))]
-    public class NewAzureVMCommand : ServiceManagement.IaaS.PersistentVMs.NewAzureVMCommand
+    /// <summary>
+    /// Test Windows Azure Service Remote Desktop Extension.
+    /// </summary>
+    [Cmdlet(VerbsDiagnostic.Test, "AzureServiceRemoteDesktopExtension"), OutputType(typeof(RemoteDesktopExtensionContext))]
+    public class TestAzureServiceRemoteDesktopExtensionCommand : GetAzureServiceRemoteDesktopExtensionCommand
     {
-        [Parameter(HelpMessage = "The name of the reserved IP.")]
-        [ValidateNotNullOrEmpty]
-        public override string ReservedIPName
+        protected override void OnProcessRecord()
         {
-            get;
-            set;
-        }
-
-        protected override void ProcessRecord()
-        {
-            ServiceManagementExtensionProfile.Initialize();
-            base.ProcessRecord();
+            base.OnProcessRecord();
         }
     }
 }

@@ -8,8 +8,8 @@
     <ProjectGuid>{39E29E07-2EA6-45A8-B16D-C4CC3966E7FF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.WindowsAzure.Commands.ServiceManagement.Extension</RootNamespace>
-    <AssemblyName>Microsoft.WindowsAzure.Commands.ServiceManagement.Extension</AssemblyName>
+    <RootNamespace>Microsoft.WindowsAzure.Commands.ServiceManagement.Extensions</RootNamespace>
+    <AssemblyName>Microsoft.WindowsAzure.Commands.ServiceManagement.Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -222,14 +222,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HostedServices\GetAzureDeploymentCmdlet.cs" />
-    <Compile Include="IaaS\PersistentVMs\NewAzureVMCmdlet.cs" />
-    <Compile Include="Model\DeploymentInfoContext.cs" />
-    <Compile Include="Model\ReservedIPConstants.cs" />
-    <Compile Include="Model\ReservedIPContext.cs" />
-    <Compile Include="Network\GetAzureReservedIPCmdlet.cs" />
-    <Compile Include="Network\NewAzureReservedIPCmdlet.cs" />
-    <Compile Include="Network\RemoveAzureReservedIPCmdlet.cs" />
+    <Compile Include="Extensions\Sample\TestAzureServiceRemoteDesktopExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -268,6 +261,10 @@
       <Project>{da1432af-d6b5-47a1-8b74-ccd740683e0f}</Project>
       <Name>ServiceManagement.Additions</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="IaaS\Extensions\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
